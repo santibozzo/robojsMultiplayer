@@ -37,7 +37,8 @@ var Duel = function(robot1File, robot2File, rounds, speed) {
     
     this.robots = [
         new RobotHandler(this, robot1File),
-        new RobotHandler(this, robot2File)
+        new RobotHandler(this, robot2File),
+        new RobotHandler(this, 'bots/boxer/main.js')
     ];
     
     this.bullets = [];
@@ -69,33 +70,43 @@ Duel.prototype.checkReady = function() {
     });
                         
     if(allReady) {
+        console.log("ALL READY");
         this.startRound();
     }
 }
 
+const startPositions = [
+  {x: 10, y: 10},
+  {x: 790, y: 590},
+  {x: 790, y: 10},
+  {x: 10, y: 590},
+];
 Duel.prototype.startRound = function() {
     this.robots.forEach(function(robot, index) {
-        robot.resetRobot(300 + 100*index+1, this.height/2);
+        robot.resetRobot(startPositions[index].x, startPositions[index].y);
     }, this);
-    
-    this.robots.forEach(function(robot) {
-        do {
-            var collides = false;
-            robot.data.x = getRandom(CONSTANTS.robotWidth, this.width-CONSTANTS.robotWidth); 
-            robot.data.y = getRandom(CONSTANTS.robotWidth, this.height-CONSTANTS.robotHeight);
+
+    console.log("ALL RESET");
+
+    this.robots.forEach(function(robot, index) {
+        // do {
+        //     var collides = false;
+        //     robot.data.x = startPositions[index].x;
+        //     robot.data.y = startPositions[index].y;
             
-            this.robots.forEach(function(robot2) {
-                if(robot2 != robot && robot2.data.x != -1) {
-                    if(robot.getBoundingBox().contains(robot2.getBoundingBox())) {
-                        collides = true;   
-                    }
-                }
-            }, this);
-        } while(collides);
+            // this.robots.forEach(function(robot2) {
+            //     if(robot2 != robot && robot2.data.x != -1) {
+            //         if(robot.getBoundingBox().contains(robot2.getBoundingBox())) {
+            //             console.log('collides');
+            //             collides = true;
+            //         }
+            //     }
+            // }, this);
+        // } while(collides);
                 
         robot.angle = getRandom(0, Math.PI*2);
     }, this);
-    
+
     this.explosions = [];
     this.bullets = [];
     this.currentRound++;
@@ -277,16 +288,19 @@ Duel.prototype.draw = function(time) {
     }
     var tankImg = [
             document.getElementById("tank0"),
-            document.getElementById("tank1")
+            document.getElementById("tank1"),
+            document.getElementById("tank2")
         ];
         
     var gunImg = [
             document.getElementById("gun0"),
-            document.getElementById("gun1")
+            document.getElementById("gun1"),
+            document.getElementById("gun2")
         ];
     var radarImg = [
         document.getElementById("radar0"),
-        document.getElementById("radar1")
+        document.getElementById("radar1"),
+        document.getElementById("radar2")
         ];
     
     this.robots.forEach(function(robot, index) {
